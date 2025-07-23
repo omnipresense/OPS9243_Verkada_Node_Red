@@ -1,0 +1,526 @@
+[
+    {
+        "id": "1f1a5468.01049c",
+        "type": "tab",
+        "label": "OPS9243 processing",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "cf6e7f3c0e4930a1",
+        "type": "link out",
+        "z": "1f1a5468.01049c",
+        "name": "JSON To Dashboard",
+        "mode": "link",
+        "links": [
+            "52d89b05d1ad5b62"
+        ],
+        "x": 785,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "2598ac243093b8e5",
+        "type": "mqtt in",
+        "z": "1f1a5468.01049c",
+        "name": "sub to json",
+        "topic": "",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "d8030ee4.24a05",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 1,
+        "x": 120,
+        "y": 120,
+        "wires": [
+            [
+                "d58fd957bcd5f841"
+            ]
+        ]
+    },
+    {
+        "id": "d58fd957bcd5f841",
+        "type": "switch",
+        "z": "1f1a5468.01049c",
+        "name": "blanks filter",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "jsonata_exp",
+                "v": "$length(payload)>1\t",
+                "vt": "jsonata"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 310,
+        "y": 120,
+        "wires": [
+            [
+                "1f262e6de645fedf"
+            ]
+        ]
+    },
+    {
+        "id": "05f9438041aac438",
+        "type": "comment",
+        "z": "1f1a5468.01049c",
+        "name": "initialize mqtt connection",
+        "info": "",
+        "x": 170,
+        "y": 180,
+        "wires": []
+    },
+        {
+        "id": "154b2a4a16aa1c13",
+        "type": "switch",
+        "z": "1f1a5468.01049c",
+        "name": "if message contains DetectedObjectVelocity",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "hask",
+                "v": "DetectedObjectVelocity",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 610,
+        "y": 20,
+        "wires": [
+            [
+                "6b1aba96b45dfc4e"
+            ]
+        ]
+    },
+    {
+        "id": "1f262e6de645fedf",
+        "type": "json",
+        "z": "1f1a5468.01049c",
+        "name": "parse to JSON obj",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 530,
+        "y": 120,
+        "wires": [
+            [
+                "154b2a4a16aa1c13",
+                "cf6e7f3c0e4930a1",
+                "57629c3f8a24a79d"
+            ]
+        ]
+    },
+    {
+        "id": "6b1aba96b45dfc4e",
+        "type": "change",
+        "z": "1f1a5468.01049c",
+        "name": "change payload to the speed number",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "$number(payload.DetectedObjectVelocity)",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 590,
+        "y": 60,
+        "wires": [
+            [
+                "82667907299a3a25"
+            ]
+        ]
+    },
+    {
+        "id": "57629c3f8a24a79d",
+        "type": "switch",
+        "z": "1f1a5468.01049c",
+        "name": "if message .source  == peak",
+        "property": "payload.source",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "peak",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 580,
+        "y": 180,
+        "wires": [
+            [
+                "09bd9ede3da071e3",
+                "da4172aaa3b1c2d8",
+                "d38e3ec6bc6e2c57"
+            ]
+        ]
+    },
+    {
+        "id": "09bd9ede3da071e3",
+        "type": "change",
+        "z": "1f1a5468.01049c",
+        "name": "change payload to the speed number",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "$number(payload.speed)",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 610,
+        "y": 240,
+        "wires": [
+            [
+                "82667907299a3a25"
+            ]
+        ]
+    },
+    {
+        "id": "57d3f7179cd5c3f2",
+        "type": "link out",
+        "z": "1f1a5468.01049c",
+        "name": "Time to Dashboard",
+        "mode": "link",
+        "links": [
+            "7237db82709c16ed",
+            "28391e9b81ac047f"
+        ],
+        "x": 785,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "e7763688e15cb0fe",
+        "type": "inject",
+        "z": "1f1a5468.01049c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 400,
+        "y": 540,
+        "wires": [
+            [
+                "da4172aaa3b1c2d8"
+            ]
+        ]
+    },
+    {
+        "id": "da4172aaa3b1c2d8",
+        "type": "moment",
+        "z": "1f1a5468.01049c",
+        "name": "",
+        "topic": "",
+        "input": "payload.time",
+        "inputType": "msg",
+        "inTz": "ETC/GMT",
+        "adjAmount": 0,
+        "adjType": "days",
+        "adjDir": "add",
+        "format": "dddd, MMMM Do YYYY, h:mm:ss a",
+        "locale": "C",
+        "output": "payload",
+        "outputType": "msg",
+        "outTz": "America/Los_Angeles",
+        "x": 620,
+        "y": 540,
+        "wires": [
+            [
+                "57d3f7179cd5c3f2"
+            ]
+        ]
+    },
+    {
+        "id": "eb2092b3b48fe98b",
+        "type": "debug",
+        "z": "1f1a5468.01049c",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1240,
+        "y": 240,
+        "wires": []
+    },
+        {
+        "id": "54b68f125ce6510e",
+        "type": "inject",
+        "z": "1f1a5468.01049c",
+        "name": "remuda_test",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"attributes\":{\"classification\":\"car\",\"direction\":\"inbound\",\"lane\":1,\"speed\":12,\"timestamp\":1751586962133},\"event_type_uid\":\"<insert Helix Event UUID here>\",\"camera_id\":\"<insert camera ID here>\",\"time_ms\":1751586962133}",
+        "payloadType": "json",
+        "x": 950,
+        "y": 20,
+        "wires": [
+            [
+                "3753b139d3ab4eaa"
+            ]
+        ]
+    },
+    {
+        "id": "bb8f57317e927bc6",
+        "type": "http request",
+        "z": "1f1a5468.01049c",
+        "name": "",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "https://api.verkada.com/cameras/v1/video_tagging/event?org_id=<insert Helix Event UUID here>",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "msg",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": ""
+            }
+        ],
+        "x": 1070,
+        "y": 240,
+        "wires": [
+            [
+                "eb2092b3b48fe98b"
+            ]
+        ]
+    },
+    {
+        "id": "3753b139d3ab4eaa",
+        "type": "http request",
+        "z": "1f1a5468.01049c",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "<enter URL provided during Helix Event creation>",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "other",
+                "keyValue": "x-verkada-auth",
+                "valueType": "other",
+                "valueValue": "<API token inserted here>"
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 1130,
+        "y": 20,
+        "wires": [
+            [
+                "819b36a39f750f6e"
+            ]
+        ]
+    },
+        {
+        "id": "24d2ecb0eecb25ee",
+        "type": "inject",
+        "z": "1f1a5468.01049c",
+        "name": "Token Refresh Timer",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1500",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 560,
+        "y": 300,
+        "wires": [
+            [
+                "07ddd2868af13ca5"
+            ]
+        ]
+    },
+    {
+        "id": "07ddd2868af13ca5",
+        "type": "http request",
+        "z": "1f1a5468.01049c",
+        "name": "Token Request Node",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://api.verkada.com/token",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "other",
+                "keyValue": "x-api-key",
+                "valueType": "other",
+                "valueValue": "<insert API key here>"
+            },
+            {
+                "keyType": "other",
+                "keyValue": "Accept",
+                "valueType": "other",
+                "valueValue": "application/json"
+            }
+        ],
+        "x": 800,
+        "y": 300,
+        "wires": [
+            [
+                "token_parser_node"
+            ]
+        ]
+    },
+    {
+        "id": "token_parser_node",
+        "type": "function",
+        "z": "1f1a5468.01049c",
+        "name": "Parse Token Response",
+        "func": "// Parse the API token response and store it in global context\nif (msg.payload && msg.payload.token) {\n    // Store the token in global context for use by other nodes\n    global.set('verkada_api_token', msg.payload.token);\n    \n    node.log('New API token received and stored: ' + msg.payload.token);\n    \n    // Pass the token along for debugging/monitoring\n    msg.payload = {\n        token: msg.payload.token,\n        timestamp: new Date().toISOString(),\n        status: 'success'\n    };\n} else {\n    node.error('Failed to parse API token from response: ' + JSON.stringify(msg.payload));\n    msg.payload = {\n        status: 'error',\n        message: 'Invalid token response',\n        timestamp: new Date().toISOString()\n    };\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1050,
+        "y": 300,
+        "wires": [
+            [
+                "83ec8e028ce01bc2"
+            ]
+        ]
+    },
+    {
+        "id": "83ec8e028ce01bc2",
+        "type": "debug",
+        "z": "1f1a5468.01049c",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1240,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "d38e3ec6bc6e2c57",
+        "type": "function",
+        "z": "1f1a5468.01049c",
+        "name": "Verkada Dynamic Formatting",
+        "func": "// Configuration - UPDATE THESE VALUES\nconst VERKADA_CONFIG = {\n    camera_id: \"<insert camera ID>\",         // Replace with actual camera ID\n    \n    // Hard-coded values (as requested)\n    classification: \"Vehicle\"                 // Fixed classification\n};\n\n// Get the current API token from global context\nconst api_token = global.get('verkada_api_token');\n\nif (!api_token) {\n    node.error(\"No API token available. Token refresh may be in progress.\");\n    return null;\n}\n\n// Parse radar sensor input\n// Handle different input formats\nlet radarData;\n\n// Check if payload is a string (JSON) that needs parsing\nif (typeof msg.payload === 'string') {\n    try {\n        radarData = JSON.parse(msg.payload);\n    } catch (e) {\n        node.error(\"Failed to parse JSON payload: \" + e.message);\n        return null;\n    }\n} else if (typeof msg.payload === 'object') {\n    radarData = msg.payload;\n} else {\n    node.error(\"Invalid radar data format: \" + JSON.stringify(msg.payload));\n    return null;\n}\n\n// Handle TimedSpeedCounts wrapper if present\nif (radarData.TimedSpeedCounts) {\n    radarData = radarData.TimedSpeedCounts;\n}\n\n// Validate input structure\nif (!radarData || typeof radarData !== 'object') {\n    node.error(\"Invalid radar data structure: \" + JSON.stringify(radarData));\n    return null;\n}\n\n// Extract and validate speed (check for 'speed' or 'average' field)\nlet speed = parseFloat(radarData.speed || radarData.average);\nif (isNaN(speed)) {\n    node.error(\"Invalid speed value: \" + (radarData.speed || radarData.average));\n    return null;\n}\n\n// Convert to positive speed value\nspeed = Math.abs(speed);\n\n// Use direction from radar message directly\nconst directionMap = {\n    \"inbound\": \"Inbound\",\n    \"outbound\": \"Outbound\"\n};\n\nconst mappedDirection = directionMap[radarData.direction] || radarData.direction;\n\n// Fixed lane value\nconst lane = 1;\n\n// Use radar sensor timestamp or generate new one\nlet timestamp_ms;\nlet timestamp_seconds;\n\nif (radarData.time) {\n    // Convert radar timestamp (appears to be in seconds with decimal)\n    const radarTimeFloat = parseFloat(radarData.time);\n    timestamp_seconds = Math.floor(radarTimeFloat);\n    timestamp_ms = Math.floor(radarTimeFloat * 1000);  // Convert to whole number milliseconds\n} else {\n    // Use current timestamp if radar time not available\n    timestamp_ms = Date.now();  // Already in milliseconds\n    timestamp_seconds = Math.floor(timestamp_ms / 1000);\n}\n\n// Validate speed range\nif (speed < 0 || speed > 200) {\n    node.error(`Speed out of range: ${speed} mph`);\n    return null;\n}\n\n// Create a clean message object for HTTP request\nconst httpMsg = {\n    payload: {\n        \"attributes\": {\n            \"classification\": VERKADA_CONFIG.classification,\n            \"direction\": mappedDirection,\n            \"lane\": lane,\n            \"speed\": Math.round(speed),  // Round to integer as required by Verkada\n            \"timestamp\": timestamp_seconds\n        },\n        \"event_type_uid\": \"f0e29f6c-0258-4622-a282-d18d5dd67572\",\n        \"camera_id\": VERKADA_CONFIG.camera_id,\n        \"time_ms\": timestamp_ms\n    },\n    headers: {\n        \"Content-Type\": \"application/json\",\n        \"x-verkada-auth\": api_token  // Use dynamic token from global context\n    }\n};\n\n// Debug output\nnode.log(\"=== COMPLETE MESSAGE DEBUG ===\");\nnode.log(\"URL will be: <insert URL here>\");\nnode.log(\"Method: POST\");\nnode.log(\"Headers: \" + JSON.stringify(httpMsg.headers));\nnode.log(\"Payload: \" + JSON.stringify(httpMsg.payload));\nnode.log(\"Payload size: \" + JSON.stringify(httpMsg.payload).length + \" bytes\");\nnode.log(\"API Key: \" + api_token);\nnode.log(\"============================\");\n\nnode.log(`Radar Event: ${radarData.label}, Speed: ${radarData.speed || radarData.average} → ${speed} mph, Direction: ${mappedDirection}, Lane: ${lane}`);\n\nreturn httpMsg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 180,
+        "wires": [
+            [
+                "bb8f57317e927bc6"
+            ]
+        ]
+    },
+    {
+        "id": "d8030ee4.24a05",
+        "type": "mqtt-broker",
+        "name": "<insert MQTT broker name>",
+        "broker": "<insert MQTT broker IP address>",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "<insert MQTT topic here>",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    }
+]
